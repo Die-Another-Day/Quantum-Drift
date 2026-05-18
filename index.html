@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>QUANTUM DRIFT — ARCADE LAB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="c"></canvas>
+  <div id="ui">
+    <div class="scanlines"></div>
+    <div class="grain"></div>
+
+    <!-- HUD -->
+    <div id="hud" class="screen hidden">
+      <div class="hud-top">
+        <div class="hud-panel">
+          <div class="hud-label">SCORE</div>
+          <div id="h-score" class="hud-val">0</div>
+        </div>
+        <div class="hud-center-col">
+          <div id="q-pips">
+            <div class="q-pip" id="qp-0">α</div>
+            <div class="q-pip" id="qp-1">β</div>
+            <div class="q-pip" id="qp-2">γ</div>
+          </div>
+          <div id="sector-badge">SECTOR <span id="h-sector">01</span></div>
+        </div>
+        <div class="hud-panel right">
+          <div class="hud-label">MULTI</div>
+          <div id="h-multi" class="hud-val">×1.0</div>
+        </div>
+      </div>
+      <div class="hud-bottom">
+        <div class="bar-group">
+          <div class="bar-lbl">ENERGY</div>
+          <div class="bar-track"><div id="ef" class="bar-fill"></div></div>
+        </div>
+        <div id="speed-box">
+          <div id="speed-num">000</div>
+          <div class="hud-label">km/s</div>
+        </div>
+        <div class="bar-group r">
+          <div class="bar-lbl">CHARGE</div>
+          <div class="bar-track"><div id="cf" class="bar-fill charge"></div></div>
+        </div>
+      </div>
+      <div id="hint-strip">
+        <span><span class="ks">← →</span> LANES</span>
+        <span><span class="ks">1·2·3</span> STATE</span>
+        <span><span class="ks">SPC</span> SHIELD</span>
+        <span><span class="ks">P</span> PAUSE</span>
+      </div>
+    </div>
+
+    <!-- MAIN MENU -->
+    <div id="menu" class="screen">
+      <div class="panel">
+        <div class="eyebrow">ARCADE LAB // EXPERIMENT_03</div>
+        <div class="logo">
+          <div class="logo-top">QUANTUM</div>
+          <div class="logo-bot">DRIFT</div>
+          <div class="logo-ver">BUILD 1.0 // ALPHA STATE</div>
+        </div>
+        <p class="flavor">Pilot through superposition states.<br>Exist in multiple realities simultaneously—<br>until observed.</p>
+        <div class="ctrl-grid">
+          <div class="ci"><span class="kb">← →</span><span>Switch Lanes</span></div>
+          <div class="ci"><span class="kb">1 · 2 · 3</span><span>Quantum State</span></div>
+          <div class="ci"><span class="kb">SPACE</span><span>Temporal Shield (40 charge)</span></div>
+          <div class="ci"><span class="kb">P</span><span>Pause / Resume</span></div>
+        </div>
+        <div class="tip-box">💡 Same-state obstacles = <span class="col-c">SOLID</span> &nbsp;·&nbsp; Different-state = <span class="col-g">GHOST</span></div>
+        <button class="btn primary" id="btn-start">INITIALIZE SEQUENCE</button>
+        <div class="best-row">
+          <span class="hud-label">QUANTUM RECORD</span>
+          <span id="best-disp">—</span>
+        </div>
+        <div class="wallet-bar">
+          <div class="w-dot"></div>
+          <span id="w-addr">0x4A2f...C3d8 // SPECTATOR MODE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAME OVER -->
+    <div id="gameover" class="screen hidden">
+      <div class="panel">
+        <div class="eyebrow pink">SYSTEM COLLAPSE</div>
+        <div class="big-title">REALITY<br>DESTABILIZED</div>
+        <div class="score-row">
+          <div><div class="hud-label">QUANTUM SCORE</div><div id="go-score" class="score-val c">0</div></div>
+          <div><div class="hud-label">SECTOR REACHED</div><div id="go-sec" class="score-val p">01</div></div>
+        </div>
+        <div id="go-rec" class="record hidden">⚡ NEW QUANTUM RECORD ⚡</div>
+        <div class="btn-col">
+          <button class="btn primary" id="btn-retry">REINITIALIZE</button>
+          <button class="btn secondary" id="btn-menu">MAIN GRID</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAUSE -->
+    <div id="pause-scr" class="screen hidden">
+      <div class="panel sm">
+        <div class="eyebrow">SIMULATION</div>
+        <div class="big-title sm">PAUSED</div>
+        <div class="btn-col">
+          <button class="btn primary" id="btn-resume">RESUME</button>
+          <button class="btn secondary" id="btn-quit">EXIT TO GRID</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTOR FLASH -->
+    <div id="sf" class="hidden">
+      <div class="sf-inner">
+        <div id="sf-lbl">SECTOR</div>
+        <div id="sf-num">02</div>
+        <div id="sf-sub">QUANTUM INSTABILITY INCREASING</div>
+      </div>
+    </div>
+
+    <!-- OVERLOAD BANNER -->
+    <div id="overload" class="hidden"><div class="ol-inner">⚡ QUANTUM OVERLOAD ⚡</div></div>
+
+    <!-- FLOATS + FLASH -->
+    <div id="floats"></div>
+    <div id="flash"></div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
