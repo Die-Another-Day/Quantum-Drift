@@ -8,6 +8,8 @@
 
 const canvas = document.getElementById('c');
 const ctx    = canvas.getContext('2d');
+document.getElementById('overload').classList.add('hidden');
+document.getElementById('sf').classList.add('hidden');
 let W, H, HORIZON_Y, PLAYER_Y, TRACK_HALF;
 
 function resize() {
@@ -525,6 +527,7 @@ function drawSpeedLines(){
 function addFloat(txt,lane,z,col){floats.push({txt,x:laneX(lane,z),y:depthY(z),vy:-98,life:1.3,max:1.3,col});}
 function updateFloats(dt){
   const el=document.getElementById('floats');el.innerHTML='';
+  if (!floats || !Array.isArray(floats)) return;
   for(let i=floats.length-1;i>=0;i--){
     const f=floats[i];f.y+=f.vy*dt;f.life-=dt;
     if(f.life<=0){floats.splice(i,1);continue;}
@@ -577,20 +580,40 @@ function tickShake(dt){
 }
 
 /* ── OVERLOAD + SECTOR ── */
+let overloadTimeout = null;
+let sectorTimeout = null;
 function triggerOverload(){
-  player.overload=true;player.olMs=OVERLOAD_MS;sfx('overload');shakeMag=14;
-  const el=document.getElementById('overload');el.classList.remove('hidden');
-  setTimeout(()=>el.classList.add('hidden'),900);addFloat('QUANTUM OVERLOAD',1,0.75,'#C7FF4D');
+  player.overload=true;
+  player.olMs=OVERLOAD_MS;
+  sfx('overload');
+  shakeMag=14;
+  const el=document.getElementById('overload');
+  el.classList.remove('hidden');
+  if (overloadTimeout) clearTimeout(overloadTimeout);
+  overloadTimeout = setTimeout(() => {
+    el.classList.add('hidden');},900);
+  addFloat('QUANTUM OVERLOAD',1,0.75,'#C7FF4D');
 }
-const SF_SUBS=['QUANTUM INSTABILITY INCREASING','DIMENSIONAL RIFT DETECTED','REALITY STABILIZERS FAILING',
-  'SUPERPOSITION CASCADE INITIATED','ALL TIMELINES CONVERGING','EVENT HORIZON APPROACHING',
-  'QUANTUM ENTANGLEMENT MAXIMUM','MULTIVERSE COLLAPSE IMMINENT'];
+const SF_SUBS=['QUANTUM INSTABILITY INCREASING',
+  'DIMENSIONAL RIFT DETECTED',
+  'REALITY STABILIZERS FAILING',
+  'SUPERPOSITION CASCADE INITIATED',
+  'ALL TIMELINES CONVERGING',
+  'EVENT HORIZON APPROACHING',
+  'QUANTUM ENTANGLEMENT MAXIMUM',
+  'MULTIVERSE COLLAPSE IMMINENT'
+];
 function triggerSector(){
   const el=document.getElementById('sf');
   document.getElementById('sf-num').textContent=String(sector).padStart(2,'0');
-  document.getElementById('sf-sub').textContent=SF_SUBS[Math.min(sector-2,SF_SUBS.length-1)];
-  el.classList.remove('hidden');sfx('sector');shakeMag=16;
-  setTimeout(()=>el.classList.add('hidden'),2700);
+  document.getElementById('sf-sub').textContent=
+    SF_SUBS[Math.min(sector-2,SF_SUBS.length-1)];
+  el.classList.remove('hidden');
+  sfx('sector');
+  shakeMag=16;
+  if (sectorTimeout) clearTimeout(sectorTimeout);
+  sectorTimeout = setTimeout(() => {
+  el.classList.add('hidden');},2700);
 }
 
 /* ── GAME OVER ── */
@@ -664,6 +687,7 @@ function renderMenuBG(dt){
 
 /* ── LOOP ── */
 let lastT=0;
+
 function loop(ts){
   const dt=Math.min((ts-lastT)/1000,0.05);lastT=ts;
   if(STATE==='PLAYING'){update(dt);render(dt);}
@@ -674,7 +698,11 @@ function loop(ts){
 
 /* ── BOOT ── */
 function startGame(){
-  initAudio();resetAll();player.screenX=laneX(1,1.0);STATE='PLAYING';showScreen('hud');lastT=performance.now();
+  initAudio();
+  resetAll();player.screenX=laneX(1,1.0);
+  STATE='PLAYING';
+  showScreen('hud');
+  lastT=performance.now();
 }
 function goMenu(){
   STATE='MENU';stopEng();showScreen('menu');
